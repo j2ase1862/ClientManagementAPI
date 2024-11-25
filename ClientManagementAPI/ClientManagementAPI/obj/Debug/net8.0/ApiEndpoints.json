@@ -16,6 +16,16 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "ClientManagementAPI.Controllers.ClientsController",
+    "Method": "GetClients",
+    "RelativePath": "api/Clients",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "ClientManagementAPI.Controllers.WeatherForecastController",
     "Method": "Get",
     "RelativePath": "WeatherForecast",

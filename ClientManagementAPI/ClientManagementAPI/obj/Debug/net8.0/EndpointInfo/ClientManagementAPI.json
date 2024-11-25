@@ -34,6 +34,16 @@
             "description": "OK"
           }
         }
+      },
+      "get": {
+        "tags": [
+          "Clients"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
       }
     },
     "/WeatherForecast": {
@@ -81,6 +91,10 @@
       "ClientData": {
         "type": "object",
         "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
           "clientType": {
             "type": "string",
             "nullable": true

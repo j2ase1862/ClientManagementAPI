@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ClientManagementAPI.Models;
 using ClientManagementAPI.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace ClientManagementAPI.Controllers
 {
@@ -8,17 +9,15 @@ namespace ClientManagementAPI.Controllers
     [Route("api/[controller]")]
     public class ClientsController : ControllerBase
     {
-        private readonly IniFileService _iniFileService;
+        private readonly AppDbContext _context;
 
-        public ClientsController()
+        public ClientsController(AppDbContext context)
         {
-            // INI 파일 경로 설정 (프로젝트 루트 디렉토리 내 Config.ini)
-            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Config.ini");
-            _iniFileService = new IniFileService(filePath);
+            _context = context;
         }
 
         [HttpPost]
-        public IActionResult SaveClient([FromBody] ClientData clientData)
+        public async Task<IActionResult> SaveClient([FromBody] ClientData clientData)
         {
             try
             {
@@ -27,10 +26,27 @@ namespace ClientManagementAPI.Controllers
                     return BadRequest(new { message = "Invalid client data." });
                 }
 
-                // INI 파일에 데이터 저장
-                _iniFileService.SaveToIniFile(clientData);
+                // 데이터베이스에 저장
+                _context.Clients.Add(clientData);
+                await _context.SaveChangesAsync();
 
                 return Ok(new { message = "Client data saved successfully." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
+        }
+
+        // GET: api/clients
+        [HttpGet]
+        public async Task<IActionResult> GetClients()
+        {
+            try
+            {
+                // 데이터베이스에서 모든 클라이언트 정보 조회
+                var clients = await _context.Clients.ToListAsync();
+                return Ok(clients); // JSON 형식으로 클라이언트 정보 반환
             }
             catch (Exception ex)
             {
